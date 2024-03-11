@@ -1,0 +1,31 @@
+/* Sidebar.css */
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 20%;
+  height: 100vh;
+  background-color: #333;
+  color: #ffff;
+
+  justify-content: center;
+}
+
+.contents a {
+  text-decoration: none;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 10px;
+  display: block;
+  margin-left: 20px;
+}
+
+.contents a:hover {
+  color: #0099ff;
+  /* Change color on hover if desired */
+}
+
+.MuiSvgIcon-root {
+  margin-right: 25px;
+  /* Adjust icon spacing */
+}

@@ -1,0 +1,50 @@
+[
+  {
+    "IdNum": "37763210",
+    "FN": "Tondsadasdasdas",
+    "LN": "adasd",
+    "MN": "",
+    "course": "dsad",
+    "year": "5"
+  },
+  {
+    "IdNum": "98765432",
+    "FN": "John",
+    "LN": "Doe",
+    "MN": "Michael",
+    "course": "Computer Science",
+    "year": "3"
+  },
+  {
+    "IdNum": "54321098",
+    "FN": "Jane",
+    "LN": "Smith",
+    "MN": "",
+    "course": "Mathematics",
+    "year": "1"
+  },
+  {
+    "IdNum": "11111111",
+    "FN": "Alice",
+    "LN": "Johnson",
+    "MN": "Marie",
+    "course": "Biology",
+    "year": "4"
+  },
+  {
+    "IdNum": "22222222",
+    "FN": "Bob",
+    "LN": "Williams",
+    "MN": "",
+    "course": "Physics",
+    "year": "2"
+  },
+  {
+    "IdNum": "33333333",
+    "FN": "Carol",
+    "LN": "Brown",
+    "MN": "",
+    "course": "Chemistry",
+    "year": "5"
+  }
+]
