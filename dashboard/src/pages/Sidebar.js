@@ -22,6 +22,10 @@ function Sidebar() {
           <VisibilityIcon />
           VIEW STUDENTS
         </Link>
+        <Link to="ViewUser">
+          <VisibilityIcon />
+          VIEW USERS
+        </Link>
 
       </div>
     </div>

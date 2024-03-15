@@ -121,6 +121,7 @@ function AddStudent() {
               helperText={errors.IdNum}
             />
           </div>
+          {/* <div className="Description" >ID must be exactly 8 digits</div> */}
           <div>
             <TextField
               label="First Name"
@@ -134,6 +135,7 @@ function AddStudent() {
               helperText={errors.FN}
             />
           </div>
+          {/* <div className="Description">First Name should not contain numbers or special characters</div> */}
           <div>
             <TextField
               label="Last Name"
@@ -147,6 +149,7 @@ function AddStudent() {
               helperText={errors.LN}
             />
           </div>
+          {/* <div className="Description">Last Name should not contain numbers or special characters</div> */}
           <div>
             <TextField
               label="Middle Name"
@@ -160,6 +163,7 @@ function AddStudent() {
               helperText={errors.MN}
             />
           </div>
+          {/* <div className="Description">Middle Name should not contain numbers or special characters</div> */}
           <div>
             <TextField
               label="Course"
@@ -173,6 +177,7 @@ function AddStudent() {
               helperText={errors.course}
             />
           </div>
+          {/* <div className="Description"> Course should not contain numbers or special characters</div> */}
           <div>
             <TextField
               label="Year"
@@ -180,21 +185,21 @@ function AddStudent() {
               margin="normal"
               type="number"
               fullWidth={false}
+              
+              helperText={errors.year}
               style={{ width: "200px" }}
               value={year}
               onChange={(e) => setyear(e.target.value)}
               error={!!errors.year}
-              helperText={errors.year}
             />
           </div>
+          {/* <div className="Description">Year must be a number between 1 and 5</div> */}
+       
           <Button variant="contained" color="primary" onClick={handleAddStudent}>
             ADD STUDENT
           </Button>
 
-          <h1>
-            Hi, {FN + " " + MN + " " + LN} <br />
-            Id Number: {IdNum} <br /> Course: {course} <br /> Year: {year}
-          </h1>
+       
         </form>
       </div>
     </div>
