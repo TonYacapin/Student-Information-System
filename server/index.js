@@ -1,11 +1,11 @@
 const express = require('express');
+const mongoose = require('mongoose');
+const Users = require("./models/user.model");
 const app = express();
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const fs = require("fs");
 
-const mongoose = require('mongoose');
-const User = require("./models/user.model");
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -23,20 +23,20 @@ db.once('open', () => {
 
 // Routes for CRUD operations
 // Create a new user
-app.post("/api/users", async (req, res) => {
+app.post('/api/adduser', async (req, res) => {
     try {
-        const newUser = new User(req.body);
-        const savedUser = await newUser.save();
-        res.json(savedUser);
+        const values = req.body
+        await Users.create(values)
+        res.json({ success: true, message: 'User added successfully!' })
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        res.json({ success: false, message: `Add user error: ${error}` })
     }
-});
+})
 
 // Get all users
 app.get("/api/users", async (req, res) => {
     try {
-        const users = await User.find();
+        const users = await Users.find();
         res.json(users);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -146,6 +146,3 @@ const port = 1337;
 app.listen(port, () => {
     console.log(`Server running on ${port}`);
 });
-
-
-
