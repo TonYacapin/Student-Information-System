@@ -46,7 +46,7 @@ app.get("/api/users", async (req, res) => {
 // Get a single user by ID
 app.get("/api/users/:id", async (req, res) => {
     try {
-        const user = await User.findById(req.params.id);
+        const user = await Users.findById(req.params.id);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
@@ -59,7 +59,7 @@ app.get("/api/users/:id", async (req, res) => {
 // Update a user by ID
 app.put("/api/users/:id", async (req, res) => {
     try {
-        const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
+        const updatedUser = await Users.findByIdAndUpdate(req.params.id, req.body, {
             new: true,
             runValidators: true,
         });
@@ -75,7 +75,7 @@ app.put("/api/users/:id", async (req, res) => {
 // Delete a user by ID
 app.delete("/api/users/:id", async (req, res) => {
     try {
-        const deletedUser = await User.findByIdAndDelete(req.params.id);
+        const deletedUser = await Users.findByIdAndDelete(req.params.id);
         if (!deletedUser) {
             return res.status(404).json({ message: "User not found" });
         }

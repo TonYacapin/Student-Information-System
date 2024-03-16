@@ -24,6 +24,7 @@ function ViewUser() {
     email: "",
     password: ""
   });
+  const [editingUser, setEditingUser] = useState(null); // State to store user being edited
 
   useEffect(() => {
     fetchUsers();
@@ -40,22 +41,43 @@ function ViewUser() {
 
   async function handleAdd() {
     try {
-      const response = await axios.post("http://localhost:1337/api/adduser", newUser);
-      if (response.data.success) {
-        alert(response.data.message);
-        console.log(response.data.message); // User added successfully
-        fetchUsers(); // Refresh user list
-        handleCloseModal(); // Close modal and clear form
+      if (editingUser) {
+        // Update existing user
+        const response = await axios.put(`http://localhost:1337/api/users/${editingUser._id}`, newUser);
+        if (response.data) {
+          alert("User updated successfully");
+          fetchUsers(); // Refresh user list
+          handleCloseModal(); // Close modal and clear form
+        } else {
+          console.log("Error updating user");
+        }
       } else {
-        console.log(response.data.message); // Error message from server
+        // Add new user
+        const response = await axios.post("http://localhost:1337/api/adduser", newUser);
+        if (response.data.success) {
+          alert(response.data.message);
+          console.log(response.data.message); // User added successfully
+          fetchUsers(); // Refresh user list
+          handleCloseModal(); // Close modal and clear form
+        } else {
+          console.log(response.data.message); // Error message from server
+        }
       }
     } catch (error) {
-      console.error("Error adding user:", error);
+      console.error("Error adding/updating user:", error);
     }
   }
+  
 
   function handleAddUser() {
     setOpenModal(true);
+    setEditingUser(null); // Reset editing user
+  }
+
+  function handleEditUser(user) {
+    setOpenModal(true);
+    setEditingUser(user);
+    setNewUser(user); // Set form fields to user data being edited
   }
 
   function handleCloseModal() {
@@ -98,7 +120,7 @@ function ViewUser() {
                   <TableCell align="right">{user.middleName}</TableCell>
                   <TableCell align="right">{user.email}</TableCell>
                   <TableCell align="right">
-                    <Button variant="contained">EDIT</Button>
+                    <Button variant="contained" onClick={() => handleEditUser(user)}>EDIT</Button>
                   </TableCell>
                 </TableRow>
               ))}
@@ -109,7 +131,7 @@ function ViewUser() {
 
       <Modal open={openModal} onClose={handleCloseModal}>
         <div className="modal">
-          <DialogTitle className="modal-title">Student Details</DialogTitle>
+          <DialogTitle className="modal-title">{editingUser ? "Edit User" : "Add User"}</DialogTitle>
           <DialogContent className="modal-content">
             <>
               <TextField value={newUser.firstName} onChange={(e) => handleInputChange(e, "firstName")} label="First Name" id="firstName" variant="outlined" />
@@ -120,7 +142,7 @@ function ViewUser() {
             </>
           </DialogContent>
           <DialogActions className="modal-actions">
-            <Button variant="contained" onClick={handleAdd}>Add Student</Button>
+            <Button variant="contained" onClick={handleAdd}>{editingUser ? "Update User" : "Add User"}</Button>
             <Button onClick={handleCloseModal}>Close</Button>
           </DialogActions>
         </div>
