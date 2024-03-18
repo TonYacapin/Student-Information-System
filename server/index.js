@@ -23,15 +23,33 @@ db.once('open', () => {
 
 // Routes for CRUD operations
 // Create a new user
+// Create a new user
+// Create a new user
 app.post('/api/adduser', async (req, res) => {
     try {
-        const values = req.body
-        await Users.create(values)
-        res.json({ success: true, message: 'User added successfully!' })
+        const { firstName, lastName, middleName, email, password } = req.body;
+
+        // Check if the email already exists
+        const existingUser = await Users.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ success: false, message: 'Email already exists. Please use a different email address.' });
+        }
+
+        // Email is unique, create the new user
+        const newUser = new Users({
+            firstName,
+            lastName,
+            middleName,
+            email,
+            password
+        });
+
+        await newUser.save();
+        res.json({ success: true, message: 'User added successfully!' });
     } catch (error) {
-        res.json({ success: false, message: `Add user error: ${error}` })
+        res.status(500).json({ success: false, message: `Add user error: ${error.message}` });
     }
-})
+});
 
 // Get all users
 app.get("/api/users", async (req, res) => {
@@ -59,19 +77,29 @@ app.get("/api/users/:id", async (req, res) => {
 // Update a user by ID
 app.put("/api/users/:id", async (req, res) => {
     try {
-        const updatedUser = await Users.findByIdAndUpdate(req.params.id, req.body, {
-            new: true,
-            runValidators: true,
-        });
+        const { firstName, lastName, middleName, email, password } = req.body;
+
+        // Check if the email already exists for another user
+        const existingUser = await Users.findOne({ email, _id: { $ne: req.params.id } });
+        if (existingUser) {
+            return res.status(400).json({ message: 'Email already exists for another user. Please use a different email address.' });
+        }
+
+        const updatedUser = await Users.findByIdAndUpdate(
+            req.params.id,
+            { firstName, lastName, middleName, email, password },
+            { new: true, runValidators: true }
+        );
+
         if (!updatedUser) {
             return res.status(404).json({ message: "User not found" });
         }
+
         res.json(updatedUser);
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
 });
-
 // Delete a user by ID
 app.delete("/api/users/:id", async (req, res) => {
     try {

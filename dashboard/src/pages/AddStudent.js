@@ -65,16 +65,7 @@ function AddStudent() {
     };
   
     try {
-      // Check if ID number is duplicate
-      const checkDuplicateResponse = await fetch(`http://localhost:1337/checkDuplicate/${IdNum}`);
-      const isDuplicate = await checkDuplicateResponse.json();
-  
-      if (isDuplicate) {
-        alert("ID Number already exists. Please use a different ID Number.");
-        return;
-      }
-  
-      // Proceed to add student if not a duplicate
+      // Proceed to add student
       const addStudentResponse = await fetch("http://localhost:1337/addStudent", {
         method: "POST",
         headers: {
@@ -85,23 +76,30 @@ function AddStudent() {
   
       const result = await addStudentResponse.json();
   
-      if (result.success) {
-        setIdNum("");
-        setFN("");
-        setLN("");
-        setMN("");
-        setcourse("");
-        setyear("");
-        alert(result.message);
+      if (addStudentResponse.ok) {
+        if (result.success) {
+          setIdNum("");
+          setFN("");
+          setLN("");
+          setMN("");
+          setcourse("");
+          setyear("");
+          alert(result.message);
+        } else {
+          alert("Failed to add student. Please try again.");
+        }
       } else {
-        alert("Failed to add student. Please try again.");
+        if (result && result.error === "duplicate") {
+          alert("ID Number already exists. Please use a different ID Number.");
+        } else {
+          alert("Failed to add student. Please try again.");
+        }
       }
     } catch (error) {
       console.error("Error adding student:", error);
-      alert("Id number already exist. Please try again.");
+      alert("Failed to add student. Please try again.");
     }
   }
-  
 
   return (
     <div className="AddStudent">

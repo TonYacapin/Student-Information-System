@@ -25,6 +25,7 @@ function ViewUser() {
     password: ""
   });
   const [editingUser, setEditingUser] = useState(null); // State to store user being edited
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     fetchUsers();
@@ -33,7 +34,7 @@ function ViewUser() {
   async function fetchUsers() {
     try {
       const response = await axios.get("http://localhost:1337/api/users");
-      setUsers(response.data)
+      setUsers(response.data);
     } catch (error) {
       console.error("Error fetching users:", error);
     }
@@ -60,14 +61,22 @@ function ViewUser() {
           fetchUsers(); // Refresh user list
           handleCloseModal(); // Close modal and clear form
         } else {
+          alert(response.data.message);
           console.log(response.data.message); // Error message from server
         }
       }
     } catch (error) {
-      console.error("Error adding/updating user:", error);
+      if (error.response && error.response.data && error.response.data.message) {
+        // Server returned an error message
+        alert(error.response.data.message);
+        console.error("Server error:", error.response.data.message);
+      } else {
+        // Generic error message
+        alert("An error occurred while adding/updating user.");
+        console.error("Error adding/updating user:", error);
+      }
     }
   }
-  
 
   function handleAddUser() {
     setOpenModal(true);
@@ -89,12 +98,17 @@ function ViewUser() {
       email: "",
       password: ""
     }); // Clear form fields
+    setShowPassword(false); // Reset show password option
   }
 
   function handleInputChange(e, field) {
     const value = e.target.value;
     setNewUser({ ...newUser, [field]: value });
   }
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   return (
     <div className="baby">
@@ -134,11 +148,28 @@ function ViewUser() {
           <DialogTitle className="modal-title">{editingUser ? "Edit User" : "Add User"}</DialogTitle>
           <DialogContent className="modal-content">
             <>
-              <TextField value={newUser.firstName} onChange={(e) => handleInputChange(e, "firstName")} label="First Name" id="firstName" variant="outlined" />
-              <TextField value={newUser.lastName} onChange={(e) => handleInputChange(e, "lastName")} label="Last Name" id="lastName" variant="outlined" />
-              <TextField value={newUser.middleName} onChange={(e) => handleInputChange(e, "middleName")} label="Middle Name" id="middleName" variant="outlined" />
-              <TextField value={newUser.email} onChange={(e) => handleInputChange(e, "email")} label="Email" id="email" variant="outlined" />
-              <TextField value={newUser.password} onChange={(e) => handleInputChange(e, "password")} label="Password" id="password" variant="outlined" />
+              <TextField value={newUser.firstName} onChange={(e) => handleInputChange(e, "firstName")} label="First Name" id="firstName" variant="outlined" fullWidth margin="normal" required="true" />
+              <TextField value={newUser.lastName} onChange={(e) => handleInputChange(e, "lastName")} label="Last Name" id="lastName" variant="outlined" fullWidth margin="normal" required="true" />
+              <TextField value={newUser.middleName} onChange={(e) => handleInputChange(e, "middleName")} label="Middle Name" id="middleName" variant="outlined" fullWidth margin="normal" required="true" />
+              <TextField value={newUser.email} onChange={(e) => handleInputChange(e, "email")} label="Email" id="email" type="email" variant="outlined" fullWidth margin="normal" required="true" />
+              <TextField
+                value={newUser.password}
+                onChange={(e) => handleInputChange(e, "password")}
+                label="Password"
+                id="password"
+                type={showPassword ? "text" : "password"}
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                required="true"
+                InputProps={{
+                  endAdornment: (
+                    <Button onClick={togglePasswordVisibility}>
+                      {showPassword ? "Hide" : "Show"}
+                    </Button>
+                  ),
+                }}
+              />
             </>
           </DialogContent>
           <DialogActions className="modal-actions">
