@@ -3,11 +3,15 @@ import "./Dashboard.css";
 import { Box } from "@mui/material";
 import Sidebar from "./Sidebar";
 
+
 function Dashboard() {
   return (
-    <div className="Welcome">
+    <>
+    <Sidebar/>
+    <div className="Welcome"> 
       <h2>Welcome to Saint Mary's University</h2>
     </div>
+</>
   );
 }
 

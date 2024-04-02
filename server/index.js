@@ -1,15 +1,18 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const Users = require("./models/user.model");
-const app = express();
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const fs = require("fs");
-
-
+const userRoutes = require("./Routes/userRoutes");
+const app = express();
+// Middleware
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.json());
 
+// Routes
+app.use("/api/user", userRoutes);
 
 mongoose.connect('mongodb://localhost:27017/mydatabase', {
     useNewUrlParser: true,
@@ -25,8 +28,9 @@ db.once('open', () => {
 // Create a new user
 // Create a new user
 // Create a new user
-app.post('/api/adduser', async (req, res) => {
+app.post('/adduser', async (req, res) => {
     try {
+        
         const { firstName, lastName, middleName, email, password } = req.body;
 
         // Check if the email already exists
@@ -52,9 +56,9 @@ app.post('/api/adduser', async (req, res) => {
 });
 
 // Get all users
-app.get("/api/users", async (req, res) => {
+app.get("/getuser", async (req, res) => {
     try {
-        const users = await Users.find();
+        const users = await users.find();
         res.json(users);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -62,9 +66,9 @@ app.get("/api/users", async (req, res) => {
 });
 
 // Get a single user by ID
-app.get("/api/users/:id", async (req, res) => {
+app.get("/getuser/:id", async (req, res) => {
     try {
-        const user = await Users.findById(req.params.id);
+        const user = await users.findById(req.params.id);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
@@ -75,7 +79,7 @@ app.get("/api/users/:id", async (req, res) => {
 });
 
 // Update a user by ID
-app.put("/api/users/:id", async (req, res) => {
+app.put("/updateuser/:id", async (req, res) => {
     try {
         const { firstName, lastName, middleName, email, password } = req.body;
 
@@ -85,7 +89,7 @@ app.put("/api/users/:id", async (req, res) => {
             return res.status(400).json({ message: 'Email already exists for another user. Please use a different email address.' });
         }
 
-        const updatedUser = await Users.findByIdAndUpdate(
+        const updatedUser = await users.findByIdAndUpdate(
             req.params.id,
             { firstName, lastName, middleName, email, password },
             { new: true, runValidators: true }
@@ -101,7 +105,7 @@ app.put("/api/users/:id", async (req, res) => {
     }
 });
 // Delete a user by ID
-app.delete("/api/users/:id", async (req, res) => {
+app.delete("/deleteuser/:id", async (req, res) => {
     try {
         const deletedUser = await Users.findByIdAndDelete(req.params.id);
         if (!deletedUser) {

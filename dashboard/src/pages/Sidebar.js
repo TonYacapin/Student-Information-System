@@ -10,19 +10,19 @@ function Sidebar() {
   return (
     <div className="sidebar">
       <div className="contents">
-        <Link to="/">
+        <Link to="/dashboard">
           <HomeIcon />
           HOME
         </Link>
-        <Link to="AddStudent">
+        <Link to="/addstudent">
           <StudentAddIcon />
           ADD STUDENT
         </Link>
-        <Link to="ViewStudents">
+        <Link to="/viewstudents">
           <VisibilityIcon />
           VIEW STUDENTS
         </Link>
-        <Link to="ViewUser">
+        <Link to="/viewuser">
           <VisibilityIcon />
           VIEW USERS
         </Link>

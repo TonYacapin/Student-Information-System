@@ -8,16 +8,17 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
+//import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
-import Typography from "@mui/material/Typography";
+//import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { TextField } from "@mui/material";
 
 import "./ViewStudents.css";
 import Sidebar from "./Sidebar";
+//import Sidebar from "./Sidebar";
 
 function Viewstudent() {
   const [students, setStudents] = useState([]);
@@ -105,6 +106,7 @@ function Viewstudent() {
 
   return (
     <>
+    <Sidebar/>
       <div className="baby">
         <div className="babies">
           <h1>View Students</h1>

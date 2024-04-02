@@ -13,11 +13,14 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Modal from "@mui/material/Modal";
 import { TextField } from "@mui/material";
+import Sidebar from "./Sidebar";
 
 function ViewUser() {
+  const [errors, setErrors] = useState({});
   const [openModal, setOpenModal] = useState(false);
   const [users, setUsers] = useState([]);
   const [newUser, setNewUser] = useState({
+    
     firstName: "",
     lastName: "",
     middleName: "",
@@ -31,9 +34,58 @@ function ViewUser() {
     fetchUsers();
   }, []);
 
+
+  function validateInputs() {
+    let valid = true;
+    const newErrors = {};
+
+        // Regular expression for email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    // Regular expression for password validation (at least 8 characters long and contains at least one digit, one lowercase letter, one uppercase letter, and one special character)
+    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?\/~`]).{8,}$/;
+
+    // Check email
+    if (!emailRegex.test(newUser.email)) {
+        newErrors.email = "Invalid email address";
+        valid = false;
+    }
+
+    // Check password
+    if (!passwordRegex.test(newUser.password)) {
+        newErrors.password = "Password must be at least 8 characters long and contain at least one digit, one lowercase letter, one uppercase letter, and one special character";
+        valid = false;
+    }
+
+
+
+    if (!/^[a-zA-Z ]+$/.test(newUser.firstName)) {
+      newErrors.firstName = "First Name should not contain numbers or special characters";
+      valid = false;
+    }
+
+    if (!/^[a-zA-Z ]+$/.test(newUser.lastName)) {
+      newErrors.lastName = "Last Name should not contain numbers or special characters";
+      valid = false;
+    }
+
+    if (newUser.middleName.trim() !== "" && !/^[a-zA-Z ]+$/.test(newUser.middleName)) {
+      newErrors.middleName = "Middle Name should not contain numbers or special characters";
+      valid = false;
+    }
+    setErrors(newErrors);
+    return valid;
+  }
+
+ 
   async function fetchUsers() {
     try {
-      const response = await axios.get("http://localhost:1337/api/users");
+      const token = localStorage.getItem("token");
+      const response = await axios.get("http://localhost:1337/api/user/", {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
       setUsers(response.data);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -42,9 +94,12 @@ function ViewUser() {
 
   async function handleAdd() {
     try {
+      if (!validateInputs()) {
+        return;
+      }
       if (editingUser) {
         // Update existing user
-        const response = await axios.put(`http://localhost:1337/api/users/${editingUser._id}`, newUser);
+        const response = await axios.put(`http://localhost:1337/updateuser/${editingUser._id}`, newUser);
         if (response.data) {
           alert("User updated successfully");
           fetchUsers(); // Refresh user list
@@ -54,7 +109,7 @@ function ViewUser() {
         }
       } else {
         // Add new user
-        const response = await axios.post("http://localhost:1337/api/adduser", newUser);
+        const response = await axios.post("http://localhost:1337/adduser", newUser);
         if (response.data.success) {
           alert(response.data.message);
           console.log(response.data.message); // User added successfully
@@ -78,6 +133,8 @@ function ViewUser() {
     }
   }
 
+
+
   function handleAddUser() {
     setOpenModal(true);
     setEditingUser(null); // Reset editing user
@@ -99,6 +156,7 @@ function ViewUser() {
       password: ""
     }); // Clear form fields
     setShowPassword(false); // Reset show password option
+    setErrors({}); // Clear errors
   }
 
   function handleInputChange(e, field) {
@@ -111,6 +169,9 @@ function ViewUser() {
   };
 
   return (
+    <>
+    <Sidebar/>
+  
     <div className="baby">
       <div className="babies">
         <h1>VIEW USERS</h1>
@@ -148,11 +209,29 @@ function ViewUser() {
           <DialogTitle className="modal-title">{editingUser ? "Edit User" : "Add User"}</DialogTitle>
           <DialogContent className="modal-content">
             <>
-              <TextField value={newUser.firstName} onChange={(e) => handleInputChange(e, "firstName")} label="First Name" id="firstName" variant="outlined" fullWidth margin="normal" required="true" />
-              <TextField value={newUser.lastName} onChange={(e) => handleInputChange(e, "lastName")} label="Last Name" id="lastName" variant="outlined" fullWidth margin="normal" required="true" />
-              <TextField value={newUser.middleName} onChange={(e) => handleInputChange(e, "middleName")} label="Middle Name" id="middleName" variant="outlined" fullWidth margin="normal" required="true" />
-              <TextField value={newUser.email} onChange={(e) => handleInputChange(e, "email")} label="Email" id="email" type="email" variant="outlined" fullWidth margin="normal" required="true" />
+              <TextField value={newUser.firstName} onChange={(e) => handleInputChange(e, "firstName")} label="First Name" id="firstName" variant="outlined" fullWidth margin="normal" required="true"     
+               error={!!errors.firstName  }
+               helperText={errors.firstName}
+              
+              />
+              <TextField value={newUser.lastName} onChange={(e) => handleInputChange(e, "lastName")} label="Last Name" id="lastName" variant="outlined" fullWidth margin="normal" required="true"   
+                error={!!errors.lastName  }
+                helperText={errors.lastName}
+
+              />
+              <TextField value={newUser.middleName} onChange={(e) => handleInputChange(e, "middleName")} label="Middle Name" id="middleName" variant="outlined" fullWidth margin="normal"    
+                error={!!errors.middleName  }
+                helperText={errors.middleName}
+              
+              />
+              <TextField value={newUser.email} onChange={(e) => handleInputChange(e, "email")} label="Email" id="email" type="email" variant="outlined" fullWidth margin="normal" required="true"  
+                error={!!errors.email  }
+                helperText={errors.email}
+              
+              />
               <TextField
+                error={!!errors.password  }
+                helperText={errors.password}
                 value={newUser.password}
                 onChange={(e) => handleInputChange(e, "password")}
                 label="Password"
@@ -179,6 +258,8 @@ function ViewUser() {
         </div>
       </Modal>
     </div>
+
+    </>
   );
 }
 

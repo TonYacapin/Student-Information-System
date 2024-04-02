@@ -1,0 +1,48 @@
+.Login {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+  }
+  
+  .Login form {
+    width: 300px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .Login h1 {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .Login .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .Login .form-group:last-child {
+    margin-bottom: 0;
+  }
+  
+  .Login label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .Login .MuiFormControl-root {
+    width: 100%;
+  }
+  
+  .Login .error-message {
+    color: red;
+    font-size: 0.9rem;
+  }
+  
+  .Login .submit-btn {
+    margin-top: 20px;
+    width: 100%;
+  }
+  

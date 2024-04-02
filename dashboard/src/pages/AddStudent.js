@@ -3,6 +3,8 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import "./Addstudent.css";
 
+import Sidebar from "./Sidebar.js"
+
 function AddStudent() {
   const [IdNum, setIdNum] = useState("");
   const [FN, setFN] = useState("");
@@ -102,6 +104,8 @@ function AddStudent() {
   }
 
   return (
+    <>
+    <Sidebar/>
     <div className="AddStudent">
       <div>
         <h2>ADD STUDENT</h2>
@@ -201,6 +205,7 @@ function AddStudent() {
         </form>
       </div>
     </div>
+    </>
   );
 }
 
