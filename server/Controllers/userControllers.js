@@ -48,19 +48,26 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 
   if (user) {
+    const token = generateToken(user._id);
+
     res.status(201).json({
-      _id: user._id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      middleName: user.middleName,
-      email: user.email,
-      token: generateToken(user._id),
+      success: true,
+      message: "User registered successfully",
+      user: {
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        middleName: user.middleName,
+        email: user.email,
+      },
+      token: token,
     });
   } else {
     res.status(400);
     throw new Error("User not found");
   }
 });
+
 
 //@description     Auth the user
 //@route           POST /api/user/login
@@ -104,4 +111,52 @@ const getUserById = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { allUsers, registerUser, authUser, getUserById };
+//@description     Update user profile
+//@route           PUT /api/user/:id
+//@access          Private
+const updateUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  if (user) {
+    user.firstName = req.body.firstName || user.firstName;
+    user.lastName = req.body.lastName || user.lastName;
+    user.middleName = req.body.middleName || user.middleName;
+    user.email = req.body.email || user.email;
+
+    if (req.body.password) {
+      user.password = req.body.password;
+    }
+
+    const updatedUser = await user.save();
+
+
+    console.log(user.password)
+    res.json({
+      _id: updatedUser._id,
+      firstName: updatedUser.firstName,
+      lastName: updatedUser.lastName,
+      middleName: updatedUser.middleName,
+      email: updatedUser.email,
+    });
+  } else {
+    res.status(404);
+    throw new Error('User not found');
+  }
+});
+
+//@description     Delete user
+//@route           DELETE /api/user/:id
+//@access          Private
+const deleteUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  if (user) {
+    await user.remove();
+    res.json({ message: 'User removed' });
+  } else {
+    res.status(404);
+    throw new Error('User not found');
+  }
+});
+
+module.exports = { allUsers, registerUser, authUser, getUserById, updateUser, deleteUser };

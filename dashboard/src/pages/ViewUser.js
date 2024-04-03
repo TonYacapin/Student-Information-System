@@ -99,7 +99,16 @@ function ViewUser() {
       }
       if (editingUser) {
         // Update existing user
-        const response = await axios.put(`http://localhost:1337/updateuser/${editingUser._id}`, newUser);
+        const token = localStorage.getItem("token"); // Get token from localStorage
+        const response = await axios.put(
+          `http://localhost:1337/api/user/${editingUser._id}`,
+          newUser,
+          {
+            headers: {
+              Authorization: `Bearer ${token}` // Set Authorization header with bearer token
+            }
+          }
+        );
         if (response.data) {
           alert("User updated successfully");
           fetchUsers(); // Refresh user list
@@ -109,7 +118,10 @@ function ViewUser() {
         }
       } else {
         // Add new user
-        const response = await axios.post("http://localhost:1337/adduser", newUser);
+        const response = await axios.post(
+          "http://localhost:1337/api/user/register",
+          newUser
+        );
         if (response.data.success) {
           alert(response.data.message);
           console.log(response.data.message); // User added successfully
@@ -121,7 +133,11 @@ function ViewUser() {
         }
       }
     } catch (error) {
-      if (error.response && error.response.data && error.response.data.message) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
         // Server returned an error message
         alert(error.response.data.message);
         console.error("Server error:", error.response.data.message);
@@ -132,6 +148,7 @@ function ViewUser() {
       }
     }
   }
+  
 
 
 
