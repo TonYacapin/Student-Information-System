@@ -5,7 +5,7 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import "./Login.css";
 
-function Login() {
+function Login({ onLogin }) {
   const [errors, setErrors] = useState({});
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -25,9 +25,9 @@ function Login() {
 
       localStorage.setItem('token', token);
 
-
       console.log('Login successful!');
-      navigate('/dashboard'); // Redirect to Dashboard after successful login
+      onLogin(token); // Call the onLogin prop function with the token
+      navigate('/dashboard'); // Navigate to the dashboard
     } catch (error) {
       if (error.response) {
         console.error('Login failed:', error.response.data.message);
