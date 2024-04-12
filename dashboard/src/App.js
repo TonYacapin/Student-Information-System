@@ -5,6 +5,8 @@ import AddStudent from './pages/AddStudent';
 import ViewStudents from './pages/ViewStudents';
 import ViewUser from './pages/ViewUser';
 import Login from './pages/Login';
+import ManageUser from './pages/ManageStudent';
+
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
@@ -22,6 +24,7 @@ function App() {
         <Route path="/addstudent" element={<ProtectedRoute token={token} component={AddStudent} />} />
         <Route path="/viewstudents" element={<ProtectedRoute token={token} component={ViewStudents} />} />
         <Route path="/viewuser" element={<ProtectedRoute token={token} component={ViewUser} />} />
+        <Route path="/managestudent" element={<ProtectedRoute token={token} component={ManageUser} />} />
         <Route path="/login" element={<Login onLogin={handleLogin} />} />
       </Routes>
     </BrowserRouter>

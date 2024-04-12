@@ -5,6 +5,8 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const fs = require("fs");
 const userRoutes = require("./Routes/userRoutes");
+const studentRoutes =require("./Routes/studentRoutes")
+
 const app = express();
 // Middleware
 app.use(cors());
@@ -13,6 +15,7 @@ app.use(express.json());
 
 // Routes
 app.use("/api/user", userRoutes);
+app.use("/api/students",studentRoutes)
 
 mongoose.connect('mongodb://localhost:27017/mydatabase', {
     useNewUrlParser: true,

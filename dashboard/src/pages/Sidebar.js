@@ -33,6 +33,11 @@ function Sidebar() {
           <VisibilityIcon />
           VIEW USERS
         </Link>
+        
+        <Link to="/managestudent">
+          <VisibilityIcon />
+          MANAGE STUDENT
+        </Link>
         <Box display="flex" justifyContent="center" mt={2}>
           <Button variant="contained" color="primary" onClick={handleLogout}>Logout</Button>
         </Box>
