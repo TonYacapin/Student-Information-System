@@ -165,48 +165,49 @@ function Login({ onLogin }) {
 
       <div>
         <h1>Login</h1>
-        {error && <p className="error-message">{error}</p>}
+       
       
         <form onSubmit={handleLogin}>
           <div>
-            <TextField
-              label="Email"
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              style={{ width: "200px" }}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              error={!!errors.email}
-              helperText={errors.email}
-            />
-          </div>
-          <div>
-            <TextField
-              label="Password"
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              style={{ width: "200px" }}
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              error={!!errors.password}
-              helperText={errors.password}
-            />
+        {error && <p className="error-message">{error}</p>}
+          <TextField
+  label="Email"
+  variant="outlined"
+  margin="normal"
+  fullWidth
+  style={{ maxWidth: "300px" }} // Adjusted width
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  error={!!errors.email}
+  helperText={errors.email}
+/>
+<TextField
+  label="Password"
+  variant="outlined"
+  margin="normal"
+  fullWidth
+  style={{ maxWidth: "300px" }} // Adjusted width
+  type="password"
+  value={password}
+  onChange={(e) => setPassword(e.target.value)}
+  error={!!errors.password}
+  helperText={errors.password}
+/>
+
           </div>
           <div className="btn-group">
             <Button variant="contained" color="primary" type="submit">
               Login
             </Button>
-            <Button variant="contained" onClick={handleSignUp}>SignUp</Button>
+           
+<p>Don't have an account? <span onClick={handleSignUp} style={{cursor: 'pointer', color: 'blue'}}>Sign Up</span></p>
           </div>
         </form>
       </div>
 
       <Modal open={openModal} onClose={handleCloseModal}>
         <div className="modal">
-          <DialogTitle className="modal-title">{"Add User"}</DialogTitle>
+          <DialogTitle className="modal-title">{"SIGN UP"}</DialogTitle>
           <DialogContent className="modal-content">
             <>
               <TextField value={newUser.firstName} onChange={(e) => handleInputChange(e, "firstName")} label="First Name" id="firstName" variant="outlined" fullWidth margin="normal" required="true"     

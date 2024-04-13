@@ -3,20 +3,20 @@ const Schema = mongoose.Schema;
 
 // Define the schema
 const studentSchema = new Schema({
-  IdNum: {
+  idnumber: {
     type: String,
     required: true,
     unique: true,
   },
-  FN: {
+  firstname: {
     type: String,
     required: true,
   },
-  LN: {
+  lastname: {
     type: String,
     required: true,
   },
-  MN: {
+  middlename: {
     type: String,
     default: '', // Default to an empty string if not provided
   },

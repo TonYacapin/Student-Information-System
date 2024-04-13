@@ -15,12 +15,12 @@ router.post('/students', createStudent);
 router.get('/students', getAllStudents);
 
 // Route to get a single student by IdNum
-router.get('/students/:idNum', getStudentById);
+router.get('/students/:id', getStudentById);
 
 // Route to update a student by IdNum
-router.put('/students/:idNum', updateStudent);
+router.put('/students/:id', updateStudent);
 
 // Route to delete a student by IdNum
-router.delete('/students/:idNum', deleteStudent);
+router.delete('/students/:id', deleteStudent);
 
 module.exports = router;

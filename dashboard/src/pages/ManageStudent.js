@@ -22,9 +22,9 @@ function ManageStudent() {
   const [newUser, setNewUser] = useState({
     
     idnumber: "",
-    firstName: "",
-    lastName: "",
-    middleName: "",
+    firstname: "",
+    lastname: "",
+    middlename: "",
     course: "",
     year: ""
   });
@@ -35,49 +35,46 @@ function ManageStudent() {
     fetchUsers();
   }, []);
 
-
   function validateInputs() {
     let valid = true;
     const newErrors = {};
-
-        // Regular expression for email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    // Regular expression for password validation (at least 8 characters long and contains at least one digit, one lowercase letter, one uppercase letter, and one special character)
-    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?\/~`]).{8,}$/;
-
-    // Check email
-    if (!emailRegex.test(newUser.email)) {
-        newErrors.email = "Invalid email address";
-        valid = false;
-    }
-
-    // Check password
-    if (!passwordRegex.test(newUser.password)) {
-        newErrors.password = "Password must be at least 8 characters long and contain at least one digit, one lowercase letter, one uppercase letter, and one special character";
-        valid = false;
-    }
-
-
-
-    if (!/^[a-zA-Z ]+$/.test(newUser.firstName)) {
-      newErrors.firstName = "First Name should not contain numbers or special characters";
+  
+    // Destructuring newUser to get the values of idnumber, firstname, lastname, middlename, course, and year
+    const { idnumber, firstname, lastname, middlename, course, year } = newUser;
+  
+    if (!/^\d{8}$/.test(idnumber)) {
+      newErrors.idnumber = "ID must be exactly 8 digits";
       valid = false;
     }
-
-    if (!/^[a-zA-Z ]+$/.test(newUser.lastName)) {
-      newErrors.lastName = "Last Name should not contain numbers or special characters";
+  
+    if (!/^[a-zA-Z ]+$/.test(firstname)) {
+      newErrors.firstname = "First Name should not contain numbers or special characters";
       valid = false;
     }
-
-    if (newUser.middleName.trim() !== "" && !/^[a-zA-Z ]+$/.test(newUser.middleName)) {
-      newErrors.middleName = "Middle Name should not contain numbers or special characters";
+  
+    if (!/^[a-zA-Z ]+$/.test(lastname)) {
+      newErrors.lastname = "Last Name should not contain numbers or special characters";
       valid = false;
     }
+  
+    if (middlename.trim() !== "" && !/^[a-zA-Z ]+$/.test(middlename)) {
+      newErrors.middlename = "Middle Name should not contain numbers or special characters";
+      valid = false;
+    }
+  
+    if (!/^[a-zA-Z ]+$/.test(course)) {
+      newErrors.course = "Course should not contain numbers or special characters";
+      valid = false;
+    }
+  
+    if (isNaN(year) || year < 1 || year > 5) {
+      newErrors.year = "Year must be a number between 1 and 5";
+      valid = false;
+    }
+  
     setErrors(newErrors);
     return valid;
   }
-
  
   async function fetchUsers() {
     try {
@@ -168,11 +165,11 @@ function ManageStudent() {
     setOpenModal(false);
     setNewUser({
       idnumber: "",
-    firstName: "",
-    lastName: "",
-    middleName: "",
-    course: "",
-    year: ""
+      firstname: "",
+     lastname: "",
+      middlename: "",
+     course: "",
+     year: ""
     }); // Clear form fields
     setShowPassword(false); // Reset show password option
     setErrors({}); // Clear errors
@@ -193,7 +190,7 @@ function ManageStudent() {
   
     <div className="baby">
       <div className="babies">
-        <h1>VIEW USERS</h1>
+        <h1>MANAGE STUDENTS</h1>
         <TableContainer component={Paper}>
           <Button variant="contained" onClick={handleAddUser}>ADD USER</Button>
           <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
@@ -212,9 +209,9 @@ function ManageStudent() {
               {users.map((user) => (
                 <TableRow key={user._id}>
                   <TableCell align="right">{user.idnumber}</TableCell>
-                  <TableCell align="right">{user.firstName}</TableCell>
-                  <TableCell align="right">{user.lastName}</TableCell>
-                  <TableCell align="right">{user.middleName}</TableCell>
+                  <TableCell align="right">{user.firstname}</TableCell>
+                  <TableCell align="right">{user.lastname}</TableCell>
+                  <TableCell align="right">{user.middlename}</TableCell>
                   <TableCell align="right">{user.course}</TableCell>
                   <TableCell align="right">{user.year}</TableCell>
                   <TableCell align="right">
@@ -232,46 +229,85 @@ function ManageStudent() {
           <DialogTitle className="modal-title">{editingUser ? "Edit User" : "Add User"}</DialogTitle>
           <DialogContent className="modal-content">
             <>
-              <TextField value={newUser.firstName} onChange={(e) => handleInputChange(e, "firstName")} label="First Name" id="firstName" variant="outlined" fullWidth margin="normal" required="true"     
-               error={!!errors.firstName  }
-               helperText={errors.firstName}
-              
-              />
-              <TextField value={newUser.lastName} onChange={(e) => handleInputChange(e, "lastName")} label="Last Name" id="lastName" variant="outlined" fullWidth margin="normal" required="true"   
-                error={!!errors.lastName  }
-                helperText={errors.lastName}
 
-              />
-              <TextField value={newUser.middleName} onChange={(e) => handleInputChange(e, "middleName")} label="Middle Name" id="middleName" variant="outlined" fullWidth margin="normal"    
-                error={!!errors.middleName  }
-                helperText={errors.middleName}
-              
-              />
-              <TextField value={newUser.email} onChange={(e) => handleInputChange(e, "email")} label="Email" id="email" type="email" variant="outlined" fullWidth margin="normal" required="true"  
-                error={!!errors.email  }
-                helperText={errors.email}
-              
-              />
-              <TextField
-                error={!!errors.password  }
-                helperText={errors.password}
-                value={newUser.password}
-                onChange={(e) => handleInputChange(e, "password")}
-                label="Password"
-                id="password"
-                type={showPassword ? "text" : "password"}
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                required="true"
-                InputProps={{
-                  endAdornment: (
-                    <Button onClick={togglePasswordVisibility}>
-                      {showPassword ? "Hide" : "Show"}
-                    </Button>
-                  ),
-                }}
-              />
+            <TextField
+  value={newUser.idnumber}
+  onChange={(e) => handleInputChange(e, "idnumber")}
+  label="Id Number"
+  id="idnumber"
+  variant="outlined"
+  fullWidth
+  margin="normal"
+  required
+  error={!!errors.idnumber}
+  helperText={errors.idnumber}
+/>
+
+<TextField
+  value={newUser.firstname}
+  onChange={(e) => handleInputChange(e, "firstname")}
+  label="First Name"
+  id="firstName"
+  variant="outlined"
+  fullWidth
+  margin="normal"
+  required
+  error={!!errors.firstname}
+  helperText={errors.firstname}
+/>
+
+<TextField
+  value={newUser.lastname}
+  onChange={(e) => handleInputChange(e, "lastname")}
+  label="Last Name"
+  id="lastName"
+  variant="outlined"
+  fullWidth
+  margin="normal"
+  required
+  error={!!errors.lastname}
+  helperText={errors.lastname}
+/>
+
+<TextField
+  value={newUser.middlename}
+  onChange={(e) => handleInputChange(e, "middlename")}
+  label="Middle Name"
+  id="middleName"
+  variant="outlined"
+  fullWidth
+  margin="normal"
+  error={!!errors.middlename}
+  helperText={errors.middleName}
+/>
+
+<TextField
+  value={newUser.course}
+  onChange={(e) => handleInputChange(e, "course")}
+  label="Course"
+  id="course"
+  variant="outlined"
+  fullWidth
+  margin="normal"
+  required
+  error={!!errors.course}
+  helperText={errors.course}
+/>
+
+<TextField
+  value={newUser.year}
+  onChange={(e) => handleInputChange(e, "year")}
+  label="Year"
+  id="year"
+  variant="outlined"
+  fullWidth
+  margin="normal"
+  required
+  error={!!errors.year}
+  helperText={errors.year}
+/>
+
+        
             </>
           </DialogContent>
           <DialogActions className="modal-actions">
