@@ -141,8 +141,8 @@ function ManageStudent() {
         console.error("Server error:", error.response.data.message);
       } else {
         // Generic error message
-        alert("An error occurred while adding/updating user.");
-        console.error("Error adding/updating user:", error);
+        alert("ID number already Exist");
+        console.error("ID number already Exist", error);
       }
     }
   }
@@ -241,6 +241,7 @@ function ManageStudent() {
   required
   error={!!errors.idnumber}
   helperText={errors.idnumber}
+
 />
 
 <TextField
