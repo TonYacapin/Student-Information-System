@@ -80,6 +80,7 @@ const updateStudent = asyncHandler(async (req, res) => {
 
   if (student) {
     // If the student is found, update its properties
+    student.idnumber = req.body.idnumber || student.idnumber;
     student.firstname = req.body.firstname || student.firstname;
     student.lastname = req.body.lastname || student.lastname;
     student.middlename = req.body.middlename || student.middlename;

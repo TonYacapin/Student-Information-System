@@ -9,10 +9,14 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 function Sidebar() {
   const navigate = useNavigate();
 
+  
   const handleLogout = () => {
+    // Remove token from local storage
     localStorage.removeItem('token');
-    navigate('/login');
+    // Redirect to the login page
+    window.location.href = '/';
   };
+  
 
   return (
     <div className="sidebar">

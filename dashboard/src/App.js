@@ -7,32 +7,44 @@ import ViewUser from './pages/ViewUser';
 import Login from './pages/Login';
 import ManageUser from './pages/ManageStudent';
 
-
 function App() {
-  const [token, setToken] = useState(localStorage.getItem('token'));
+  const storedToken = localStorage.getItem('token');
+  const [token, setToken] = useState(storedToken);
   const [loading, setLoading] = useState(true);
 
-  const handleLogin = (token) => {
-    setToken(token);
+  // Function to handle login
+  const handleLogin = (newToken) => {
+    setToken(newToken);
   };
 
+  // Redirect to Dashboard if token exists
+  if (token) {
+    return (
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Navigate to="/dashboard" />} />
+          <Route path="/dashboard" element={<ProtectedRoute token={token} component={Dashboard} />} />
+          <Route path="/addstudent" element={<ProtectedRoute token={token} component={AddStudent} />} />
+          <Route path="/viewstudents" element={<ProtectedRoute token={token} component={ViewStudents} />} />
+          <Route path="/viewuser" element={<ProtectedRoute token={token} component={ViewUser} />} />
+          <Route path="/managestudent" element={<ProtectedRoute token={token} component={ManageUser} />} />
+        </Routes>
+      </BrowserRouter>
+    );
+  }
+
+  // Render Login if token doesn't exist
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login onLogin={handleLogin} />} />
-        <Route path="/dashboard" element={<ProtectedRoute token={token} component={Dashboard} />} />
-        <Route path="/addstudent" element={<ProtectedRoute token={token} component={AddStudent} />} />
-        <Route path="/viewstudents" element={<ProtectedRoute token={token} component={ViewStudents} />} />
-        <Route path="/viewuser" element={<ProtectedRoute token={token} component={ViewUser} />} />
-        <Route path="/managestudent" element={<ProtectedRoute token={token} component={ManageUser} />} />
-        <Route path="/login" element={<Login onLogin={handleLogin} />} />
       </Routes>
     </BrowserRouter>
   );
 }
 
 function ProtectedRoute({ token, component: Component, ...rest }) {
-  return token ? <Component {...rest} /> : <Navigate to="/login" />;
+  return token ? <Component {...rest} /> : <Navigate to="/" />;
 }
 
 export default App;

@@ -5,6 +5,9 @@ const generateToken = require("../config/generateToken");
 //@description     Get or Search all users
 //@route           GET /api/user?search=
 //@access          Public
+
+
+
 const allUsers = asyncHandler(async (req, res) => {
   const keyword = req.query.search
     ? {
@@ -27,7 +30,7 @@ const allUsers = asyncHandler(async (req, res) => {
 const registerUser = asyncHandler(async (req, res) => {
   const { firstName, lastName, middleName, email, password } = req.body;
 
-  if (!firstName || !lastName || !middleName || !email || !password) {
+  if (!firstName || !lastName || !email || !password) {
     res.status(400);
     throw new Error("Please Enter all the Fields");
   }
@@ -158,5 +161,14 @@ const deleteUser = asyncHandler(async (req, res) => {
     throw new Error('User not found');
   }
 });
+const getAllUsers = asyncHandler(async (req, res) => {
+  try {
+    const users = await User.find(); // Changed variable name to users
+    res.json(users); // Return users
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
-module.exports = { allUsers, registerUser, authUser, getUserById, updateUser, deleteUser };
+
+module.exports = {getAllUsers, allUsers, registerUser, authUser, getUserById, updateUser, deleteUser };

@@ -28,6 +28,7 @@ function Login({ onLogin }) {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordLOGIN, setShowPasswordLOGIN] = useState(false);
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -158,6 +159,9 @@ function Login({ onLogin }) {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+  const togglePasswordVisibilityLOGIN = () => {
+    setShowPasswordLOGIN(!showPasswordLOGIN);
+  };
 
   return (
     <div className="Login">   
@@ -187,11 +191,20 @@ function Login({ onLogin }) {
   margin="normal"
   fullWidth
   style={{ maxWidth: "300px" }} // Adjusted width
-  type="password"
+  type={showPasswordLOGIN ? "text" : "password"}
   value={password}
   onChange={(e) => setPassword(e.target.value)}
   error={!!errors.password}
+  
   helperText={errors.password}
+  InputProps={{
+    endAdornment: (
+      <Button onClick={togglePasswordVisibilityLOGIN}>
+        {showPasswordLOGIN ? "Hide" : "Show"}
+      </Button>
+    ),
+  }}
+  
 />
 
           </div>

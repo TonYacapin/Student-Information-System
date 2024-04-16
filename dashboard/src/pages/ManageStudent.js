@@ -192,7 +192,7 @@ function ManageStudent() {
       <div className="babies">
         <h1>MANAGE STUDENTS</h1>
         <TableContainer component={Paper}>
-          <Button variant="contained" onClick={handleAddUser}>ADD USER</Button>
+          <Button variant="contained" onClick={handleAddUser}>ADD STUDENT</Button>
           <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
             <TableHead>
               <TableRow>
@@ -226,7 +226,7 @@ function ManageStudent() {
 
       <Modal open={openModal} onClose={handleCloseModal}>
         <div className="modal">
-          <DialogTitle className="modal-title">{editingUser ? "Edit User" : "Add User"}</DialogTitle>
+          <DialogTitle className="modal-title">{editingUser ? "Edit Student" : "Add Student"}</DialogTitle>
           <DialogContent className="modal-content">
             <>
 

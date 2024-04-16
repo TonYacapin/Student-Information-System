@@ -81,7 +81,7 @@ function ViewUser() {
   async function fetchUsers() {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:1337/api/user/", {
+      const response = await axios.get("http://localhost:1337/api/user/getalluser", {
         headers: {
           Authorization: `Bearer ${token}`
         }
