@@ -17,7 +17,7 @@ app.use(express.json());
 app.use("/api/user", userRoutes);
 app.use("/api/students",studentRoutes)
 
-mongoose.connect('mongodb://localhost:27017/mydatabase', {
+mongoose.connect('mongodb+srv://M1tTXqc1V33vax5Z:M1tTXqc1V33vax5Z@spazio.qqohvto.mongodb.net/mydatabase', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 });

@@ -12,7 +12,7 @@ const { protect } = require("../middleware/auth");
 
 const router = express.Router();
 
-router.route("/getalluser").get(protect, getAllUsers)
+router.route("/getalluser").get(protect, getAllUsers);
 // Route to get all users
 router.route("/").get(protect, allUsers);
 // Route to register a new user
