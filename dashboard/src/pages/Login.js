@@ -145,7 +145,7 @@ function Login({ onLogin }) {
         console.error("Server error:", error.response.data.message);
       } else {
         // Generic error message
-        alert("Email Already Exist");
+        alert("Email already exist");
         console.error("Error Signing Up", error);
       }
     }
