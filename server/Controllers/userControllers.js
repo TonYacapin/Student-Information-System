@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const User = require("../models/user.model");
 const generateToken = require("../config/generateToken");
+const Student = require("../models/student.model");
 
 //@description     Get or Search all users
 //@route           GET /api/user?search=
@@ -28,7 +29,7 @@ const allUsers = asyncHandler(async (req, res) => {
 //@route           POST /api/user/register
 //@access          Public
 const registerUser = asyncHandler(async (req, res) => {
-  const { firstName, lastName, middleName, email, password } = req.body;
+  const { firstName, lastName, middleName, email, password, isAdmin } = req.body;
 
   if (!firstName || !lastName || !email || !password) {
     res.status(400);
@@ -48,6 +49,7 @@ const registerUser = asyncHandler(async (req, res) => {
     middleName,
     email,
     password,
+    isAdmin,
   });
 
   if (user) {
@@ -78,22 +80,49 @@ const registerUser = asyncHandler(async (req, res) => {
 const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  const user = await User.findOne({ email });
+  // Check in User collection
+  let user = await User.findOne({ email });
 
+  // Check in Student collection if user not found in User collection
+  if (!user) {
+    user = await Student.findOne({ idnumber: email });
+  }
+
+  // If user found and password matches, construct the appropriate response JSON
   if (user && (await user.matchPassword(password))) {
-    res.json({
-      _id: user._id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      middleName: user.middleName,
-      email: user.email,
-      token: generateToken(user._id),
-    });
+    let jsonResponse;
+    if (user instanceof User) {
+      // If user is from the User collection
+      jsonResponse = {
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        middleName: user.middleName,
+        email: user.email,
+        isAdmin: user.isAdmin,
+        token: generateToken(user._id),
+      };
+    } else if (user instanceof Student) {
+      // If user is from the Student collection
+      jsonResponse = {
+        _id: user._id,
+        idnumber: user.idnumber,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        middlename: user.middlename,
+        course: user.course,
+        year: user.year,
+        token: generateToken(user._id),
+      };
+    }
+    // Send the constructed JSON response
+    res.json(jsonResponse);
   } else {
     res.status(401);
     throw new Error("Invalid Email or Password");
   }
 });
+
 
 //@description     Get user data by ID
 //@route           GET /api/user/:id
@@ -125,6 +154,7 @@ const updateUser = asyncHandler(async (req, res) => {
     user.lastName = req.body.lastName || user.lastName;
     user.middleName = req.body.middleName || user.middleName;
     user.email = req.body.email || user.email;
+    user.isAdmin = req.body.isAdmin || user.isAdmin;
 
     if (req.body.password) {
       user.password = req.body.password;

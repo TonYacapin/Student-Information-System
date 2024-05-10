@@ -75,17 +75,25 @@ const getStudentById = async (req, res) => {
 const updateStudent = asyncHandler(async (req, res) => {
   const studentId = req.params.id;
 
-  // Find the student with the given ID
-  const student = await Student.findById(studentId);
+  try {
+    // Find the student with the given ID
+    const student = await Student.findById(studentId);
 
-  if (student) {
-    // If the student is found, update its properties
+    if (!student) {
+      return res.status(404).json({
+        message: 'Student not found',
+        requestedStudentId: studentId,
+      });
+    }
+
+    // Update student properties
     student.idnumber = req.body.idnumber || student.idnumber;
     student.firstname = req.body.firstname || student.firstname;
     student.lastname = req.body.lastname || student.lastname;
     student.middlename = req.body.middlename || student.middlename;
     student.course = req.body.course || student.course;
     student.year = req.body.year || student.year;
+    student.password = req.body.password || student.password;
 
     // Save the updated student
     const updatedStudent = await student.save();
@@ -104,12 +112,10 @@ const updateStudent = asyncHandler(async (req, res) => {
         year: updatedStudent.year,
       }
     });
-  } else {
-    // If the student is not found, return a 404 error
-    res.status(404).json({
-      message: 'Student not found',
-      requestedStudentId: studentId,
-    });
+  } catch (error) {
+    // Handle errors
+    console.error('Error updating student:', error);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 

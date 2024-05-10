@@ -23,6 +23,11 @@ const UsersSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    isAdmin: {
+        type: Boolean,
+        required: true,
+        default : false
     }
 });
 
@@ -31,9 +36,9 @@ UsersSchema.methods.matchPassword = async function (enteredPassword) {
   };
   
   UsersSchema.pre("save", async function (next) {
-    if (!this.isModified) {
-      next();
-    }
+    if (!this.isModified("password")) {
+        next();
+      }
   
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);

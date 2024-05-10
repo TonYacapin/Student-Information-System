@@ -27,7 +27,8 @@ function ViewUser() {
     lastName: "",
     middleName: "",
     email: "",
-    password: ""
+    password: "",
+    isAdmin: ""
   });
   const [editingUser, setEditingUser] = useState(null); // State to store user being edited
   const [showPassword, setShowPassword] = useState(false);

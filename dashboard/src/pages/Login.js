@@ -11,6 +11,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 
 function Login({ onLogin }) {
+  const [user, setUser] = useState(null);
   const [errors, setErrors] = useState({});
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -29,21 +30,31 @@ function Login({ onLogin }) {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordLOGIN, setShowPasswordLOGIN] = useState(false);
-  const handleLogin = async (e) => {
+  
+  const handleLogin = async (e, setUser) => {
     e.preventDefault();
     try {
       const response = await axios.post(`http://localhost:1337/api/user/login`, {
         email: email,
         password: password,
       });
-
-      const { token } = response.data;
-
+  
+      const { token, user } = response.data; // Assuming the response contains both token and user data
+  
+      // Store token and user data in local storage
       localStorage.setItem("token", token);
-
+      localStorage.setItem("user", JSON.stringify(user));
+  
       console.log("Login successful!");
       onLogin(token); // Call the onLogin prop function with the token
-      navigate("/dashboard"); // Navigate to the dashboard
+      setUser(user); // Set the user state in the parent component, assuming you have a setUser function in the parent component
+  
+      // Navigate to the appropriate dashboard based on user type
+      if (user.isAdmin) {
+        navigate("/dashboard"); // Navigate to the admin dashboard
+      } else {
+        navigate("/student-dashboard"); // Navigate to the student dashboard
+      }
     } catch (error) {
       if (error.response) {
         console.error("Login failed:", error.response.data.message);
@@ -57,7 +68,8 @@ function Login({ onLogin }) {
       }
     }
   };
-
+  
+  
   function handleCloseModal() {
     setOpenModal(false);
     setNewUser({
