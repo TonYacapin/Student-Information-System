@@ -8,40 +8,43 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 
 function Sidebar() {
   const navigate = useNavigate();
+  const isStudent = localStorage.getItem('idnumber'); // Check if the user is a student
 
-  
   const handleLogout = () => {
     // Remove token from local storage
-    localStorage.removeItem('token');
+    localStorage.clear();
     // Redirect to the login page
-    window.location.href = '/';
+    window.location.href = "/";
   };
-  
 
   return (
     <div className="sidebar">
       <div className="contents">
-        <Link to="/dashboard">
-          <HomeIcon />
-          HOME
-        </Link>
-        <Link to="/addstudent">
-          <StudentAddIcon />
-          ADD STUDENT
-        </Link>
-        <Link to="/viewstudents">
-          <VisibilityIcon />
-          VIEW STUDENTS
-        </Link>
-        <Link to="/viewuser">
-          <VisibilityIcon />
-          VIEW USERS
-        </Link>
-        
-        <Link to="/managestudent">
-          <VisibilityIcon />
-          MANAGE STUDENT
-        </Link>
+
+        {!isStudent && ( // Render only if the user is not a student
+          <>
+            <Link to="/dashboard">
+              <HomeIcon />
+              HOME
+            </Link>
+            <Link to="/addstudent">
+              <StudentAddIcon />
+              ADD STUDENT
+            </Link>
+            <Link to="/viewstudents">
+              <VisibilityIcon />
+              VIEW STUDENTS
+            </Link>
+            <Link to="/viewuser">
+              <VisibilityIcon />
+              VIEW USERS
+            </Link>
+            <Link to="/managestudent">
+              <VisibilityIcon />
+              MANAGE STUDENT
+            </Link>
+          </>
+        )}
         <Box display="flex" justifyContent="center" mt={2}>
           <Button variant="contained" color="primary" onClick={handleLogout}>Logout</Button>
         </Box>

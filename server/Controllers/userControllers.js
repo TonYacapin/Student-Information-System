@@ -80,48 +80,64 @@ const registerUser = asyncHandler(async (req, res) => {
 const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  // Check in User collection
-  let user = await User.findOne({ email });
+  try {
+    // Check in User collection
+    let user = await User.findOne({ email });
+    console.log("User found in User collection:", user);
 
-  // Check in Student collection if user not found in User collection
-  if (!user) {
-    user = await Student.findOne({ idnumber: email });
-  }
-
-  // If user found and password matches, construct the appropriate response JSON
-  if (user && (await user.matchPassword(password))) {
-    let jsonResponse;
-    if (user instanceof User) {
-      // If user is from the User collection
-      jsonResponse = {
-        _id: user._id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        middleName: user.middleName,
-        email: user.email,
-        isAdmin: user.isAdmin,
-        token: generateToken(user._id),
-      };
-    } else if (user instanceof Student) {
-      // If user is from the Student collection
-      jsonResponse = {
-        _id: user._id,
-        idnumber: user.idnumber,
-        firstname: user.firstname,
-        lastname: user.lastname,
-        middlename: user.middlename,
-        course: user.course,
-        year: user.year,
-        token: generateToken(user._id),
-      };
+    // If user not found in User collection, check in Student collection
+    if (!user) {
+      user = await Student.findOne({ idnumber: email });
+      console.log("User found in Student collection:", user);
     }
-    // Send the constructed JSON response
-    res.json(jsonResponse);
-  } else {
-    res.status(401);
-    throw new Error("Invalid Email or Password");
+
+    // If user found and password matches
+    if (user && (await user.matchPassword(password))) {
+      // Construct the appropriate response JSON
+      let jsonResponse;
+      if (user instanceof User) {
+        // If user is from the User collection
+        jsonResponse = {
+          token: generateToken(user._id),
+          user: {
+            _id: user._id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            middleName: user.middleName,
+            email: user.email,
+            isAdmin: user.isAdmin,
+          }
+        };
+      } else if (user instanceof Student) {
+        // If user is from the Student collection
+        jsonResponse = {
+          token: generateToken(user._id),
+          user: {
+            _id: user._id,
+            idnumber: user.idnumber,
+            firstname: user.firstname,
+            lastname: user.lastname,
+            middlename: user.middlename,
+            course: user.course,
+            year: user.year,
+          }
+        };
+      }
+      // Send the constructed JSON response
+      res.json(jsonResponse);
+    } else {
+      res.status(401);
+      throw new Error("Invalid Email or Password");
+    }
+  } catch (error) {
+    // Handle any errors that occur during user authentication
+    console.error("Error during authentication:", error.message);
+    res.status(500).json({ error: "An error occurred during authentication" });
   }
 });
+
+
+
 
 
 //@description     Get user data by ID

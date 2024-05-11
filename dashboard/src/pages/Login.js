@@ -31,44 +31,72 @@ function Login({ onLogin }) {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordLOGIN, setShowPasswordLOGIN] = useState(false);
   
-  const handleLogin = async (e, setUser) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`http://localhost:1337/api/user/login`, {
-        email: email,
-        password: password,
-      });
-  
-      const { token, user } = response.data; // Assuming the response contains both token and user data
-  
-      // Store token and user data in local storage
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
-  
-      console.log("Login successful!");
-      onLogin(token); // Call the onLogin prop function with the token
-      setUser(user); // Set the user state in the parent component, assuming you have a setUser function in the parent component
-  
-      // Navigate to the appropriate dashboard based on user type
-      if (user.isAdmin) {
-        navigate("/dashboard"); // Navigate to the admin dashboard
-      } else {
-        navigate("/student-dashboard"); // Navigate to the student dashboard
+        const response = await axios.post(`http://localhost:1337/api/user/login`, {
+            email: email,
+            password: password,
+        });
+
+        const { token, user } = response.data; // Destructure token and user from response.data
+
+        // Store token in localStorage
+        localStorage.setItem("token", token);
+
+        if (user) {
+            // Check if the user is a student
+            if ('idnumber' in user) {
+                // Store student data in localStorage
+                localStorage.setItem('userId', user._id);
+                localStorage.setItem('idnumber', user.idnumber);
+                localStorage.setItem('firstname', user.firstname);
+                localStorage.setItem('lastname', user.lastname);
+                localStorage.setItem('middlename', user.middlename);
+                localStorage.setItem('course', user.course);
+                localStorage.setItem('year', user.year);
+            } else {
+                // Store user data in localStorage
+                localStorage.setItem('userId', user._id);
+                localStorage.setItem('firstName', user.firstName);
+                localStorage.setItem('lastName', user.lastName);
+                localStorage.setItem('middleName', user.middleName);
+                localStorage.setItem('email', user.email);
+                localStorage.setItem('isAdmin', user.isAdmin);
+            }
+        }
+
+        console.log("Login successful!");
+        onLogin(token); // Call the onLogin prop function with the token
+
+        // Navigate to the appropriate dashboard based on user type
+        if (user) {
+          // Navigate to the appropriate dashboard based on user type
+          if ('idnumber' in user) {
+              // Student
+              navigate("/student-dashboard");
+          } else if (user.isAdmin) {
+              // Admin
+              navigate("/dashboard");
+          } else {
+              // Handle other cases here
+              console.log("User type not specified");
+          }
       }
     } catch (error) {
-      if (error.response) {
-        console.error("Login failed:", error.response.data.message);
-        setError("Invalid Email or Password");
-      } else if (error.request) {
-        console.error("No response received:", error.request);
-        setError("No response received. Please check your network connection.");
-      } else {
-        console.error("Error:", error.message);
-        setError("An error occurred. Please try again later.");
-      }
+        if (error.response) {
+            console.error("Login failed:", error.response.data.message);
+            setError("Invalid Email or Password");
+        } else if (error.request) {
+            console.error("No response received:", error.request);
+            setError("No response received. Please check your network connection.");
+        } else {
+            console.error("Error:", error.message);
+            setError("An error occurred. Please try again later.");
+        }
     }
-  };
-  
+};
+
   
   function handleCloseModal() {
     setOpenModal(false);
@@ -187,7 +215,7 @@ function Login({ onLogin }) {
           <div>
         {error && <p className="error-message">{error}</p>}
           <TextField
-  label="Email"
+  label="Email/IDNumber"
   variant="outlined"
   margin="normal"
   fullWidth
